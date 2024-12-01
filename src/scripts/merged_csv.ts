@@ -3,6 +3,7 @@ import { cleanCSVPath, mergedCSVPath } from "../paths.js";
 import { f1Score } from "../stats.js";
 import { ExternalPartyRow } from "../types.js";
 // import { Minhash, LshIndex } from "minhash";
+// import Levenshtein from "fast-levenshtein";
 
 const getNextRows = parseCSV(cleanCSVPath)
 
@@ -80,6 +81,109 @@ console.time("phone")
 }
 console.timeEnd("phone")
 console.log(`Phone processed ! Now processing the names...`)
+
+console.time("streetname-name")
+{
+    const matches: Record<string, number> = {}
+    for(let i = 0; i < rows.length; i++) {
+        const row = rows[i]
+
+        const payloads = []
+        if (row.parsed_address_street_name && row.abbreviated_name) {
+            payloads.push(`${row.parsed_address_street_name}:${row.abbreviated_name}`)
+        }
+        if (row.parsed_address_city && row.parsed_address_postal_code) {
+            payloads.push(`${row.parsed_address_city}:${row.parsed_address_postal_code}`)
+        }
+        // if (row.parsed_address_city && row.parsed_address_state) {
+        //     payloads.push(`${row.parsed_address_city}:${row.parsed_address_postal_code}`)
+        // }
+        // if (row.parsed_address_street_name && row.parsed_address_country) {
+        //     payloads.push(`${row.parsed_address_street_name}:${row.parsed_address_country}`)
+        // }
+        // if (row.parsed_address_street_name && row.parsed_address_state) {
+        //     payloads.push(`${row.parsed_address_street_name}:${row.parsed_address_state}`)
+        // }
+        // if(row.clean_name) {
+        //     payloads.push(row.clean_name)
+        // }
+        
+        for (const match of payloads) {
+            if(match in matches) {
+                const old_id = row.assigned_id!
+    
+                const new_id = rows[matches[match]].assigned_id!
+                if (old_id === new_id) continue
+    
+                if (assigned_ids[new_id].length > 1 && assigned_ids[old_id].length > 1)continue
+    
+                for (const i of assigned_ids[old_id]) {
+                    rows[i].assigned_id = new_id
+                }
+                assigned_ids[new_id].push(...assigned_ids[old_id])
+    
+                delete assigned_ids[old_id]
+    
+                continue
+            }
+    
+            // console.log(`Setting`, phone, `to`, i)
+            matches[match] = i
+        }
+    }
+}
+console.timeEnd("streetname-name")
+
+
+// console.time("clean_name")
+// {
+//     const threshold_levenshtein = 2
+//     const matches: Record<string, number[]> = {}
+//     for(let i = 0; i < rows.length; i++) {
+//         const row = rows[i]
+
+//         if(!row.clean_name)continue
+
+//         matches[row.clean_name] ??= []
+//         matches[row.clean_name].push(i)
+//     }
+
+//     for(let i = 0; i < rows.length; i++) {
+//         const row = rows[i]
+
+//         if(!row.clean_name)continue        
+//         if(!row.parsed_address_street_name)continue        
+//         if(!(row.clean_name in matches))continue
+
+//         const ids = matches[row.clean_name]
+
+//         for (let j = 0; j < ids.length; j++) {
+//             const target_i = ids[j]
+//             // ignore previous or current rows
+//             if(target_i <= i)continue
+//             const target_row = rows[target_i]
+
+//             // compute levenshtein
+//             const distance = Levenshtein.get(target_row.parsed_address_street_name!, row.parsed_address_street_name!)
+//             if(distance <= threshold_levenshtein)continue
+
+//             // merge
+//             const old_id = row.assigned_id!
+//             const new_id = target_row.assigned_id!
+//             if (old_id === new_id) continue
+    
+//             if (assigned_ids[new_id].length > 1 && assigned_ids[old_id].length > 1)continue
+    
+//             for (const i of assigned_ids[old_id]) {
+//                 rows[i].assigned_id = new_id
+//             }
+//             assigned_ids[new_id].push(...assigned_ids[old_id])
+    
+//             delete assigned_ids[old_id]
+//         }
+//     }
+// }
+// console.timeEnd("clean_name")
 
 // console.time("~fields")
 // {
@@ -187,12 +291,25 @@ console.log(`Phone processed ! Now processing the names...`)
 // }
 // console.timeEnd("~fields")
 
-console.log(
-    f1Score(
-        rows.map(r => +r.external_id!),
-        rows.map(r => +r.assigned_id!),
+if (rows.length > 20_000) {
+    for(const row of rows) {
+        row.external_id = row.assigned_id
+
+        // for(const key in row) {
+        //     if (key !== "external_id" && key !== "transaction_reference_id") {
+        //         delete row[key]
+        //     }
+        // }
+    }
+} else {
+    console.log(
+        f1Score(
+            rows.map(r => +r.external_id!),
+            rows.map(r => +r.assigned_id!),
+        )
     )
-)
+}
+
 
 console.info(`Saving rows to merged.csv...`)
 console.time("save")

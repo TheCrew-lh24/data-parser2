@@ -26,6 +26,7 @@
     "fast-csv": "^5.0.2",
     "fast-levenshtein": "^3.0.0",
     "minhash": "^0.0.9",
+    "n-gram": "^2.0.2",
     "promised-sqlite3": "^2.1.0",
     "sqlite3": "^5.1.7"
   }

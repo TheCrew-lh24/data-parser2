@@ -1,6 +1,6 @@
 import { indicators } from "../countries.js";
 import { formatCSV, parseCSV } from "../csv.js";
-import { cleanCSVPath, externalPartiesTrainPath } from "../paths.js";
+import { cleanCSVPath, externalPartiesTestPath, externalPartiesTrainPath } from "../paths.js";
 import { ExternalPartyRow } from "../types.js";
 
 const getNextRows = parseCSV(externalPartiesTrainPath)
@@ -39,6 +39,7 @@ while(rows.length) {
         let name = row.parsed_name;
         if (name) {
             name = name.replace(/, */g, " ");
+            name = name.replace(/-+/g, " ")
     
             // identify titles (mrs, mr, dr, ...) from the parsed name, currently we guess that anything with 2 or more letters followed by a dot is a title
             const titles = [];
@@ -86,9 +87,10 @@ while(rows.length) {
             */
             
             if(name_words.length){
-                // could potentially use name_words but i'm recreating it
-                // to avoid more bugs if I change name_words
-                row.abbreviated_name = name_words[0][0] + ". " + name.slice(name_words[0].length + 1)
+                const abbreviated_name = name_words[0][0] + ". " + name.slice(name_words[0].length + 1)
+                if(abbreviated_name.length > 4) {
+                    row.abbreviated_name = abbreviated_name
+                }
             }
         }
         // ---- END NAME ---

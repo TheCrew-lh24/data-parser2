@@ -17,6 +17,9 @@ importers:
       minhash:
         specifier: ^0.0.9
         version: 0.0.9
+      n-gram:
+        specifier: ^2.0.2
+        version: 2.0.2
       promised-sqlite3:
         specifier: ^2.1.0
         version: 2.1.0(sqlite3@5.1.7)
@@ -704,6 +707,9 @@ packages:
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+
+  n-gram@2.0.2:
+    resolution: {integrity: sha512-S24aGsn+HLBxUGVAUFOwGpKs7LBcG4RudKU//eWzt/mQ97/NMKQxDWHyHx63UNWk/OOdihgmzoETn1tf5nQDzQ==}
 
   napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
@@ -1762,6 +1768,8 @@ snapshots:
   mkdirp@1.0.4: {}
 
   ms@2.1.2: {}
+
+  n-gram@2.0.2: {}
 
   napi-build-utils@1.0.2: {}
 
