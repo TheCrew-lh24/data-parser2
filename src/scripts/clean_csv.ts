@@ -1,9 +1,9 @@
 import { indicators } from "../countries.js";
 import { formatCSV, parseCSV } from "../csv.js";
-import { cleanCSVPath, externalPartiesTestPath } from "../paths.js";
+import { cleanCSVPath, externalPartiesTrainPath } from "../paths.js";
 import { ExternalPartyRow } from "../types.js";
 
-const getNextRows = parseCSV(externalPartiesTestPath)
+const getNextRows = parseCSV(externalPartiesTrainPath)
 const writeStream = formatCSV(cleanCSVPath)
 
 let rows: ExternalPartyRow[] = await getNextRows()
@@ -97,8 +97,8 @@ while(rows.length) {
         row.phone_indicator = "";
         let phone = row.party_phone;
         if (phone) {
-            phone = phone.replace(/\D/g, ""); // remove all non digits and plus to clean up (this does not seem to induce false positives after comparing removing different stuff or not)
-            phone = phone.replace(/^0+/, ""); // replace leading zeros with a plus (e.g 0039 or +0039 becomes +39)
+            phone = phone.replace(/[^\d]/g, ""); // remove all non digits and plus to clean up (this does not seem to induce false positives after comparing removing different stuff or not)
+            phone = phone.replace(/^0+/, "+"); // replace leading zeros with a plus (e.g 0039 or +0039 becomes +39)
     
             // Add a plus sign at the beginning if it's missing
             if (phone[0] !== "+") {
@@ -114,8 +114,8 @@ while(rows.length) {
             //     row.parsed_address_country
             // ])
     
+            row.clean_phone = phone;
             // Identify the phone indicator by checking if the phone starts with any of the known valid country indicators
-            row.party_phone = phone;
             let phone_indicator;
             for (const indicator of indicators) {
                 if (phone.slice(1, indicator.length + 1) === indicator) {

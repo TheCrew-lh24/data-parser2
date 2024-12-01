@@ -14,6 +14,9 @@ importers:
       fast-levenshtein:
         specifier: ^3.0.0
         version: 3.0.0
+      minhash:
+        specifier: ^0.0.9
+        version: 0.0.9
       promised-sqlite3:
         specifier: ^2.1.0
         version: 2.1.0(sqlite3@5.1.7)
@@ -649,6 +652,9 @@ packages:
   mimic-response@3.1.0:
     resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
     engines: {node: '>=10'}
+
+  minhash@0.0.9:
+    resolution: {integrity: sha512-Rs0iOE6oJwvMN2CrsNvdCMkpo0Lzh7wmTZAVH6j550n0VeqxfVhQe0lV8Ay4bmXC5ATZmihq9YbZ/n6cf6kP7A==}
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
@@ -1702,6 +1708,8 @@ snapshots:
       picomatch: 2.3.1
 
   mimic-response@3.1.0: {}
+
+  minhash@0.0.9: {}
 
   minimatch@3.1.2:
     dependencies:
