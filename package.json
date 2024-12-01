@@ -14,11 +14,18 @@
   "author": "JeanOUINA",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@types/fast-levenshtein": "^0.0.4",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "eslint": "^8.54.0",
     "typescript": "^5.2.2"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "fast-csv": "^5.0.2",
+    "fast-levenshtein": "^3.0.0",
+    "promised-sqlite3": "^2.1.0",
+    "sqlite3": "^5.1.7"
+  }
 }
